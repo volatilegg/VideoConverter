@@ -11,7 +11,7 @@ public class VideoConverter {
     var writeInput: AVAssetWriterInput!
     var bufferAdapter: AVAssetWriterInputPixelBufferAdaptor!
     var videoSettings: [String: Any]!
-    var frameTime: CMTime = CMTime(value: 1, timescale: 5)
+    public var frameTime: CMTime = CMTime(value: 1, timescale: 5)
 
     var completionBlock: ((URL) -> Void)?
     var movieMakerUIImageExtractor: ((Any) -> UIImage?)?
