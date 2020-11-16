@@ -2,9 +2,6 @@
 import UIKit
 import AVFoundation
 
-typealias MovieMakerCompletion = (URL) -> Void
-typealias ExtractorCompletion = (Any) -> UIImage?
-
 public class MovieConverter {
     static let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
     static let tempPath = paths[0] + "/exprotvideo.mp4"
@@ -16,8 +13,8 @@ public class MovieConverter {
     var videoSettings: [String: Any]!
     var frameTime: CMTime = CMTime(value: 1, timescale: 5)
 
-    var completionBlock: MovieMakerCompletion?
-    var movieMakerUIImageExtractor: ExtractorCompletion?
+    var completionBlock: ((URL) -> Void)?
+    var movieMakerUIImageExtractor: ((Any) -> UIImage?)?
 
     public class func videoSettings(width: Int, height: Int) -> [String: Any] {
         if Int(width) % 16 != 0 {
@@ -56,7 +53,7 @@ public class MovieConverter {
         self.bufferAdapter = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: self.writeInput, sourcePixelBufferAttributes: bufferAttributes)
     }
 
-    public func createMovieFrom(urls: [URL], withCompletion: @escaping MovieMakerCompletion) {
+    public func createMovieFrom(urls: [URL], withCompletion: @escaping (URL) -> Void) {
         self.createMovieFromSource(
             images: urls as [Any],
             extractor: {(inputObject: Any) -> UIImage? in
@@ -65,7 +62,7 @@ public class MovieConverter {
             withCompletion: withCompletion)
     }
 
-    public func createMovieFrom(images: [UIImage], withCompletion: @escaping MovieMakerCompletion) {
+    public func createMovieFrom(images: [UIImage], withCompletion: @escaping (URL) -> Void) {
         self.createMovieFromSource(
             images: images,
             extractor: { inputObject -> UIImage? in
@@ -74,7 +71,7 @@ public class MovieConverter {
             withCompletion: withCompletion)
     }
 
-    public func createMovieFromSource(images: [Any], extractor: @escaping ExtractorCompletion, withCompletion: @escaping MovieMakerCompletion) {
+    public func createMovieFromSource(images: [Any], extractor: @escaping (Any) -> UIImage?, withCompletion: @escaping (URL) -> Void) {
         self.completionBlock = withCompletion
 
         self.assetWriter.startWriting()
