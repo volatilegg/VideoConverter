@@ -2,7 +2,7 @@
 import UIKit
 import AVFoundation
 
-public class MovieConverter {
+public class VideoConverter {
     static let paths = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
     static let tempPath = paths[0] + "/exprotvideo.mp4"
     static let fileURL = URL(fileURLWithPath: tempPath)
@@ -32,14 +32,14 @@ public class MovieConverter {
 
     public init(videoSettings: [String: Any]) {
 
-        if FileManager.default.fileExists(atPath: MovieConverter.tempPath) {
-            guard (try? FileManager.default.removeItem(atPath: MovieConverter.tempPath)) != nil else {
+        if FileManager.default.fileExists(atPath: VideoConverter.tempPath) {
+            guard (try? FileManager.default.removeItem(atPath: VideoConverter.tempPath)) != nil else {
                 print("remove path failed")
                 return
             }
         }
 
-        self.assetWriter = try! AVAssetWriter(url: MovieConverter.fileURL, fileType: AVFileType.mov)
+        self.assetWriter = try! AVAssetWriter(url: VideoConverter.fileURL, fileType: AVFileType.mov)
 
         self.videoSettings = videoSettings
         self.writeInput = AVAssetWriterInput(mediaType: AVMediaType.video, outputSettings: videoSettings)
@@ -114,7 +114,7 @@ public class MovieConverter {
             self.writeInput.markAsFinished()
             self.assetWriter.finishWriting {
                 DispatchQueue.main.sync {
-                    self.completionBlock!(MovieConverter.fileURL)
+                    self.completionBlock!(VideoConverter.fileURL)
                 }
             }
         }
